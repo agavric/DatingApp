@@ -38,7 +38,7 @@ export class MembersService {
     this.userParams = new UserParams(this.user);
     return this.userParams;
   }
-  
+
   getMembers(userParams: UserParams) {
     const key = Object.values(userParams).join('-');
     var response = this.memberCache.get(key);
@@ -88,6 +88,16 @@ export class MembersService {
   
   deletePhoto(photoId: number) {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
+  }
+
+  addLike(username: string) {
+    return this.http.post(this.baseUrl + 'likes/' + username, {});
+  }
+
+  getLikes(predicate: string, pageNumber, pageSize) {
+    let params = this.getPaginationHeader(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+    return this.getPaginatedResult<Partial<Member[]>>(this.baseUrl + 'likes', params);
   }
 
   private getPaginatedResult<T>(url, params) {
